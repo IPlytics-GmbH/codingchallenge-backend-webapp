@@ -56,6 +56,25 @@ To setup SOLR locally, you first need to have docker installed. Once done, run t
 
 `docker run --name solr_9 -d -p 8983:8983 -t solr` <br/> <br/>
 `docker exec -it --user=solr solr_9 bin/solr create_core -c patents` <br/> <br/>
+
+`curl -X POST -H 'Content-type:application/json' --data-binary '{
+"add-field":{
+"name":"title",
+"type":"string",
+"stored":true ,
+"indexed":true },
+"add-field":{
+"name":"publicationNumber",
+"type":"string",
+"stored":true ,
+"indexed":true },
+"add-field":{
+"name":"publicationDate",
+"type":"string",
+"stored":true ,
+"indexed":true },
+}' http://localhost:8983/solr/patents/schema`
+<br/><br/>
 `docker cp ./src/main/resources/data/patents.json {container_id}:/opt/solr-9.0.0` <br/>
 make sure to replace the `{container_id}` with the id of your SOLR docker instance. <br/> <br/>
 `docker exec -it --user=solr solr_9 bin/post -c patents patents.json` <br/> <br/>
