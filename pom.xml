@@ -16,6 +16,8 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<solr.version>8.11.1</solr.version>
+		<json-smart.version>2.4.8</json-smart.version>
 	</properties>
 
 	<dependencies>
@@ -35,6 +37,16 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
+			<version>${solr.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+			<version>${json-smart.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>

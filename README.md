@@ -47,6 +47,51 @@ One interesting aspect of industrial or technology standards is how they are com
 
 * Create new endpoint(s) which let a user declare their patent(s) to be part of a standard. As in the previous task, ensure that appropriate responses and status codes are returned.
 
+### 4. Setup and query SOLR
+We use SOLR internally as our search engine. Given the `/patents/search` endpoint, implement a query to SOLR and return all patents matching the title string parameter.
+
+#### 4.1 Setup SOLR locally
+
+To setup SOLR locally, you first need to have docker installed. Once done, run the following commands to build a SOLR docker container:
+
+`docker run --name solr_9 -d -p 8983:8983 -t solr` <br/> <br/>
+`docker exec -it --user=solr solr_9 bin/solr create_core -c patents` <br/> <br/>
+
+`curl -X POST -H 'Content-type:application/json' --data-binary '{
+"add-field":{
+"name":"title",
+"type":"string",
+"stored":true ,
+"indexed":true },
+"add-field":{
+"name":"publicationNumber",
+"type":"string",
+"stored":true ,
+"indexed":true },
+"add-field":{
+"name":"publicationDate",
+"type":"string",
+"stored":true ,
+"indexed":true },
+}' http://localhost:8983/solr/patents/schema`
+<br/><br/>
+`docker cp ./src/main/resources/data/patents.json {container_id}:/opt/solr-9.0.0` <br/>
+make sure to replace the `{container_id}` with the id of your SOLR docker instance. <br/> <br/>
+`docker exec -it --user=solr solr_9 bin/post -c patents patents.json` <br/> <br/>
+
+To make sure everything is working as expected, navigate to http://localhost:8983. You should be redirected to the SOLR Admin UI.
+
+#### 4.2 Query SOLR
+
+Now that SOLR is up and running, it's time to start querying!
+
+We already loaded our patents SOLR core with sample documents. All that's required is to modify the `searchPatentByTitle` method in the `PatentsService` class and write some code. We already provide a SearchProvider class that handles the communication, you only have to build the query (make sure to use the JSONQueryRequest class) and extract the response.
+
+#### 4.3 Refactor Implementation
+
+* Our SearchProvider class could use some work. Currently, it is a singleton and managed by us instead of being managed by the Spring IOC. Refactor the SearchProvider to be managed by Spring.
+* We have some TODOs that our developers were too lazy to get back too. We could use your help in finalizing them
+
 ## How to submit
 Once you're happy with your work and want to submit, `zip` the repo folder and submit it via email to our HR manager. Remember to include the whole assignment directory (including hidden files), so we can see your git commit history.
 
